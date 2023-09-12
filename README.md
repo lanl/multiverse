@@ -1,4 +1,4 @@
-# bnn_multiverse
+# multiverse
 User-friendly Bayesian Neural Networks (BNNs) using PyTorch and Pyro, built on top of [`TyXe`](https://github.com/TyXe-BDL/TyXe/tree/master) and extending it to the [linearized Laplace approximation](https://arxiv.org/abs/2008.08400). The implementation extends parts of the functionality of [`laplace`](https://github.com/AlexImmer/Laplace) to general likelihoods and priors.
 
 **Inference methods:**
@@ -12,13 +12,13 @@ Simple neural architectures are provided in `BNNmultiverse.neural_nets`.
 
 ```
 optim = pyro.optim.Adam({"lr": 1e-3})
-net = bnn_multiverse.neural_nets.MLP(in_dim=1, out_dim=1, width=10, depth=2, activation="tanh")
+net = multiverse.neural_nets.MLP(in_dim=1, out_dim=1, width=10, depth=2, activation="tanh")
 
 wp = .1 # prior precision for the parameters of the BNN
-prior = bnn_multiverse.priors.IIDPrior((dist.Normal(0., wp**-2)))
+prior = multiverse.priors.IIDPrior((dist.Normal(0., wp**-2)))
 
 nprec = .1**-2 # noise precision for the likelihood function
-likelihood = bnn_multiverse.likelihoods.HomoskedasticGaussian(n, precision=nprec)
+likelihood = multiverse.likelihoods.HomoskedasticGaussian(n, precision=nprec)
 ```
 
 For SVI and MCMC, see [TyXe](https://github.com/TyXe-BDL/TyXe/blob/master/README.md). For linLA, we can specify an approximation to the GGN approx. of the Hessian:
@@ -27,7 +27,7 @@ For SVI and MCMC, see [TyXe](https://github.com/TyXe-BDL/TyXe/blob/master/README
 * `subnet` considers `S_perc`% of the parameters having the highest posterior variance, as detailed in [Daxberg et al. (2021)](http://proceedings.mlr.press/v139/daxberger21a.html), to build a full GGN, fixing the other parameters at the MAP
 For example:
 ```
-bayesian_mlp = bnn_multiverse.LaplaceBNN(net, prior, likelihood, approximation='subnet', S_perc=0.5)
+bayesian_mlp = multiverse.LaplaceBNN(net, prior, likelihood, approximation='subnet', S_perc=0.5)
 ```
 
 We can then train the model by calling:
