@@ -227,6 +227,5 @@ def hessian(y, xs):
             [Hij.reshape(-1) for Hij in torch.autograd.grad(dyi, xs, retain_graph=True)]
         )
         H.append(Hi)
-    H = torch.stack(H)
-
+    H = torch.stack(H)        
     return H

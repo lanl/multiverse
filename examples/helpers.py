@@ -8,6 +8,36 @@ import functorch
 from copy import deepcopy
 import pyro
 
+import seaborn as sns
+
+def covariance_plots(bnn_model):
+    fig, axs = plt.subplots(1,2, figsize=(10,4))
+    axs[0].bar(torch.arange(len(bnn_model.GGN.diag())), (1/bnn_model.GGN.diag()).sqrt(), color='black')
+    # set title
+    axs[0].title.set_text('Approx. posterior std. of $\\theta$')
+
+    for label in axs[0].yaxis.get_ticklabels()[::2]:
+        label.set_visible(False)
+
+    symm_cov = bnn_model.GGN.inverse()
+    std_dev = torch.sqrt(torch.diag(symm_cov))
+    inv_std_dev = 1.0 / std_dev
+    correlation_matrix = symm_cov * (inv_std_dev.unsqueeze(0) * inv_std_dev.unsqueeze(1))
+
+    # plot covariance matrix with seaborn
+    plot2 = sns.heatmap(correlation_matrix, cmap='seismic', vmin=-1, vmax=1)
+    axs[1] = plot2
+    
+    axs[1].set_title('Approx. posterior correlation matrix of $\\theta$')
+
+    # title('Approx. posterior correlation matrix of $\\theta$')
+    # disable ticsk
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.show()
+
+
 def plot_nll(nll_hist, test_nll_hist=None, title = None, save = False, save_path = None):
     ''' Plots the negative log-likelihood history of the model during training.
     '''
@@ -202,7 +232,6 @@ def coverage(predictive, x_test, y_test, x_train, y_train, M=100):
     cp_test = torch.sum(cover_test, dim=0)/N_test
     cp_train = torch.sum(cover_train, dim=0)/N_train
     return cp_train, cp_test
-
 
 
 def loss_on_2d_subspace(data_loader, model, weights, resolution = 50, u_lim = 30, l_lim = -5, MC_chains = None):

@@ -368,7 +368,7 @@ class LaplaceBNN(_SupervisedBNN):
             prior_scale = self.prior._distribution.scale
             P = (1/self.S_perc)*(prior_scale**(-2)) * torch.eye(num_par, device = self.device)
         else:
-            P = - (1/self.S_perc)*hessian(net_tr.log_prob_sum(), self.net_guide.loc, approx=self.approximation).to(self.device)
+            P = - (1/self.S_perc)*hessian(net_tr.log_prob_sum(), self.net_guide.loc).to(self.device)
 
         torch.nn.utils.vector_to_parameters(self.map_params, self.torch_net.parameters())
         self.jacobian = partial(backpack_jacobian, self.torch_net)
@@ -463,7 +463,7 @@ class LaplaceBNN(_SupervisedBNN):
         # if nan try numpy
         if torch.isnan(log_det_H):
             npGGN = self.GGN.cpu().detach().numpy()
-            log_det_H = torch.tensor(np.linalg.slogdet((1/(2*np.pi)) * npGGN).prod()).to(self.device)
+            log_det_H = torch.tensor(np.linalg.slogdet((1/(2*np.pi)) * npGGN)).prod().to(self.device)
         log_ml = log_joint - 0.5 * log_det_H
         return log_ml
 
