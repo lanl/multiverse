@@ -1,3 +1,9 @@
+
+*.png
+data/
+results/
+lightning_logs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -342,3 +348,4 @@ tyxe/*
 torchbnn/*
 lightning_logs/*
 results/*
+
