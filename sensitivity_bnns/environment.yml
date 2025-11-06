@@ -1,0 +1,16 @@
+name: bnnpy_3_10
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - jax
+  - jaxlib
+  - ipykernel
+  - matplotlib
+  - ipywidgets
+  - scikit-learn
+  - cpuonly
+  - pytorch
+  - torchaudio
+  - torchvision
+prefix: /opt/anaconda3/envs/bnnpy_3_10
